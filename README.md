@@ -33,4 +33,4 @@ A lightweight [Language Server Protocol] based on the following repo (https://gi
 
 ## License
 
-MIT License © 2025 Sam Affleck
+MIT License © 2025 MeckHack2025
