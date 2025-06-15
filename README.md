@@ -1,6 +1,6 @@
-# OpenFOAM Language Server (LSP)
+# OpenFOAM Language Server
 
-A lightweight [Language Server Protocol] based on the following repo (https://github.com/semanticart/minimum-viable-vscode-language-server-extension)) implementation that adds modern editor support for [OpenFOAM](https://openfoam.org/) dictionary files.
+A lightweight [Language Server Protocol] based on the following repo (https://github.com/semanticart/minimum-viable-vscode-language-server-extension). We implement modern editor support for [OpenFOAM](https://openfoam.org/).
 
 > ✨ Instant hover docs, semantic highlighting, and keyword autocompletion.
 
@@ -21,14 +21,19 @@ A lightweight [Language Server Protocol] based on the following repo (https://gi
   git clone https://github.com/samaffleck/OpenFOAM-LSP.git
   cd OpenFOAM-LSP
   ```
+
 2. Install dependencies:
+  ```bash
   npm install
+  ```
 
 3. Build the server and client:
+  ```bash
   npm run compile
+  ```
 
 4. Lanuch the client (for stdio testing or development):
-  npm run start
+  Open the Run and Debug view and press "Launch Client" (or press F5). This will open a [Extension Development Host] VS Code window.
 
 
 ## License
