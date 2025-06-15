@@ -79,7 +79,10 @@ const foamLValueKeyword = [
   "relTol",
   "preconditioner",
   "solver",
-  "smoother"
+  "smoother",
+  "grad",
+  "div",
+  "phi"
 ];
 
 const foamListKeywords = [
@@ -171,7 +174,13 @@ const hoverInfo: Record<string, string> = {
   smoother: "Defines the actual smoothing (relaxation) method used within smoothSolver",
   symGaussSeidel: "Symmetric Gauss-Seidel smoothing. \nGauss-Seidel is a classic iterative method that updates variables sequentially. \nSymmetric version runs a forward and then a backward sweep through the matrix to improve convergence. \nIt’s more stable and accurate than simple Gauss-Seidel. \nOther possible values: GaussSeidel, DILU, DIC, none.",
   fixedValue: "Fixed value boundary condition. Other possible values: zeroGradient, empty, calculated, codedFixedValue, uniform, nonuniform, noSlip.",
-  GaussSeidel: "Gauss-Seidel is a classic iterative method that updates variables sequentially. \nSymmetric version runs a forward and then a backward sweep through the matrix to improve convergence.\nOther possible values: GaussSeidel, DILU, DIC, none."
+  GaussSeidel: "Gauss-Seidel is a classic iterative method that updates variables sequentially. \nSymmetric version runs a forward and then a backward sweep through the matrix to improve convergence.\nOther possible values: GaussSeidel, DILU, DIC, none.",
+  nu: "Viscosity of the fluid.",
+  p: "Kinematic pressure. Defined as static pressure/density.",
+  u: "Velocity of the fluid.",
+  grad: "Gradient operator",
+  div: "Divergence operator",
+  phi: "Flux through the cell (surfaceScalarField).\nFor incompressible flows phi=U. \nFor compressible flows phi=rho*U."
 };
 
 const foamTokenTypes = [
