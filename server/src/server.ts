@@ -1,6 +1,3 @@
-// import log from "./log"
-// import { initialize } from "./methods/initialize";
-
 import {
   createConnection,
   TextDocuments,
@@ -25,6 +22,8 @@ import {
   CompletionItemKind,
   CompletionParams
 } from 'vscode-languageserver';
+
+import { Diagnostic, DiagnosticSeverity } from "vscode-languageserver";
 
 const connection = createConnection(ProposedFeatures.all);
 
@@ -114,7 +113,8 @@ const foamRValueKeyword = [
   "on",
   "general",
   "true",
-  "false"
+  "false",
+  "wall"
 ];
 
 const hoverInfo: Record<string, string> = {
@@ -171,7 +171,7 @@ const hoverInfo: Record<string, string> = {
   smoother: "Defines the actual smoothing (relaxation) method used within smoothSolver",
   symGaussSeidel: "Symmetric Gauss-Seidel smoothing. \nGauss-Seidel is a classic iterative method that updates variables sequentially. \nSymmetric version runs a forward and then a backward sweep through the matrix to improve convergence. \nIt’s more stable and accurate than simple Gauss-Seidel. \nOther possible values: GaussSeidel, DILU, DIC, none.",
   fixedValue: "Fixed value boundary condition. Other possible values: zeroGradient, empty, calculated, codedFixedValue, uniform, nonuniform, noSlip.",
-  GaussSeidel: ""
+  GaussSeidel: "Gauss-Seidel is a classic iterative method that updates variables sequentially. \nSymmetric version runs a forward and then a backward sweep through the matrix to improve convergence.\nOther possible values: GaussSeidel, DILU, DIC, none."
 };
 
 const foamTokenTypes = [
@@ -191,8 +191,6 @@ connection.languages.semanticTokens.on((params: SemanticTokensParams): SemanticT
   const text = document.getText();
   const builder = new SemanticTokensBuilder();
   const lines = text.split(/\r?\n/g);
-  let insideBoundaryFieldBlock = false;
-  let boundaryBraceDepth = 0;
   let insideBlockComment = false;
 
   for (let line = 0; line < lines.length; line++) {
@@ -218,33 +216,6 @@ connection.languages.semanticTokens.on((params: SemanticTokensParams): SemanticT
       builder.push(line, 0, text.length, 3, 0);
       continue;
     }
-
-
-    /* Check for boundary field */
-    // if (trimmed.startsWith("boundaryField")) {
-    //   insideBoundaryFieldBlock = true;
-    // }
-
-    // if (insideBoundaryFieldBlock) {
-    //   // Count braces
-    //   const openBraces = (text.match(/{/g) || []).length;
-    //   const closeBraces = (text.match(/}/g) || []).length;
-    //   boundaryBraceDepth += openBraces - closeBraces;
-
-    //   // Find patch name lines (heuristic: identifier followed by `{` or nothing)
-    //   if (/^\s*[a-zA-Z_][a-zA-Z0-9_]*\s*$/.test(text)) {
-    //     const token = trimmed;
-    //     const col = text.indexOf(token);
-    //     builder.push(line, col, token.length, 5 /* parameter */, 0);
-    //   }
-
-    //   // Exit condition: we're out of boundaryField
-    //   if (boundaryBraceDepth <= 0) {
-    //     insideBoundaryFieldBlock = false;
-    //     boundaryBraceDepth = 0;
-    //   }
-    // }
-
 
     /* Check for keywords */
     const words = text.split(/\b/);
@@ -366,3 +337,54 @@ documents.listen(connection);
 
 // Listen on the connection
 connection.listen();
+
+async function validateTextDocument(textDocument: TextDocument): Promise<void> {
+  const text = textDocument.getText();
+  const diagnostics: Diagnostic[] = [];
+
+  const lines = text.split(/\r?\n/g);
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i];
+
+    let braceDepth = 0;
+
+    for (let i = 0; i < lines.length; i++) {
+      const line = lines[i];
+      const openCount = (line.match(/{/g) || []).length;
+      const closeCount = (line.match(/}/g) || []).length;
+
+      braceDepth += openCount - closeCount;
+
+      if (braceDepth < 0) {
+        diagnostics.push({
+          severity: DiagnosticSeverity.Error,
+          range: {
+            start: { line: i, character: 0 },
+            end: { line: i, character: line.length }
+          },
+          message: "Unexpected closing brace '}' — no matching opening brace.",
+          source: "openfoam-lsp"
+        });
+        braceDepth = 0; // Reset to avoid cascading errors
+      }
+    }
+
+    if (braceDepth > 0) {
+      diagnostics.push({
+        severity: DiagnosticSeverity.Error,
+        range: {
+          start: { line: lines.length - 1, character: 0 },
+          end: { line: lines.length - 1, character: lines[lines.length - 1].length }
+        },
+        message: `Missing ${braceDepth} closing brace(s) '}'.`,
+        source: "openfoam-lsp"
+      });
+    }
+  }
+
+  connection.sendDiagnostics({ uri: textDocument.uri, diagnostics });
+}
+
+documents.onDidChangeContent(change => {
+  validateTextDocument(change.document);
+});
