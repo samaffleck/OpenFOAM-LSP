@@ -1,6 +1,6 @@
 # OpenFOAM Language Server (LSP)
 
-A lightweight [Language Server Protocol] based on the following repo (https://microsoft.github.io/language-server-protocol/) implementation that adds modern editor support for [OpenFOAM](https://openfoam.org/) dictionary files.
+A lightweight [Language Server Protocol] based on the following repo (https://github.com/semanticart/minimum-viable-vscode-language-server-extension)) implementation that adds modern editor support for [OpenFOAM](https://openfoam.org/) dictionary files.
 
 > ✨ Instant hover docs, semantic highlighting, and keyword autocompletion.
 
