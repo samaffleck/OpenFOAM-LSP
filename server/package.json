@@ -1,0 +1,18 @@
+{
+  "name": "OpenFOAM_LSP",
+  "description": "Language server for OpenFOAM",
+  "version": "1.0.0",
+  "author": "Sam Affleck",
+  "license": "MIT",
+  "engines": {
+    "node": "*"
+  },
+  "repository": {
+    "type": "git",
+    "url": "REPLACE_ME"
+  },
+  "dependencies": {
+    "vscode-languageserver": "^8.1.0",
+    "vscode-languageserver-textdocument": "^1.0.8"
+  }
+}
