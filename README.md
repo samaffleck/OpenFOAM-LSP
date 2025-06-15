@@ -25,7 +25,7 @@ A lightweight [Language Server Protocol] based on the following repo (https://gi
   npm install
 
 3. Build the server and client:
-  npm run build
+  npm run compile
 
 4. Lanuch the client (for stdio testing or development):
   npm run start
