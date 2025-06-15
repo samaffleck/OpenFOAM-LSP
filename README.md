@@ -1,8 +1,6 @@
 # OpenFOAM Language Server
 
-A lightweight [Language Server Protocol] based on the following repo (https://github.com/semanticart/minimum-viable-vscode-language-server-extension). We implement modern editor support for [OpenFOAM](https://openfoam.org/).
-
-> ✨ Instant hover docs, semantic highlighting, and keyword autocompletion.
+A lightweight Language Server with for modern editor support for OpenFoam (https://openfoam.com/).
 
 ---
 
@@ -35,6 +33,11 @@ A lightweight [Language Server Protocol] based on the following repo (https://gi
 4. Lanuch the client (for stdio testing or development):
   Open the Run and Debug view and press "Launch Client" (or press F5). This will open a [Extension Development Host] VS Code window.
 
+## Demo
+
+Demo of the fvSolution file from OpenFOAM10/incompressible/icoFoam/cavity/cavity/system
+
+![OpenFOAM demo](./assets/OpenFOAM-LSP-Demo.png)
 
 ## License
 
